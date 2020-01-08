@@ -11,6 +11,8 @@ export 'src/build.dart';
 export 'src/compiler.dart';
 export 'src/file_system.dart';
 export 'src/generator.dart';
+export 'src/build_context.dart';
+export 'src/build_manager.dart';
 export 'src/mirror_context.dart';
 
 /// Compiler for the runtime package itself.
