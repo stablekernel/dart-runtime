@@ -8,21 +8,29 @@ import 'package:yaml/yaml.dart';
 
 /// Configuration and context values used during [Build.execute].
 class BuildContext {
-  BuildContext(this.applicationLibraryFileUri, this.buildDirectoryUri,
+  BuildContext(this.rootLibraryFileUri, this.buildDirectoryUri,
       this.executableUri, this.source,
       {bool includeDevDependencies}) : this.includeDevDependencies = includeDevDependencies ?? false;
 
   factory BuildContext.fromMap(Map map) {
     return BuildContext(
-        Uri.parse(map['sourceApplicationLibraryFileUri']),
+        Uri.parse(map['rootLibraryFileUri']),
         Uri.parse(map['buildDirectoryUri']),
         Uri.parse(map['executableUri']),
         map['source'],
         includeDevDependencies: map['includeDevDependencies']);
   }
 
+  Map<String, dynamic> get safeMap => {
+    'rootLibraryFileUri': sourceLibraryFile.uri.toString(),
+    'buildDirectoryUri': buildDirectoryUri.toString(),
+    'source': source,
+    'executableUri': executableUri.toString(),
+    'includeDevDependencies': includeDevDependencies
+  };
+
   /// A [Uri] to the library file of the application to be compiled.
-  final Uri applicationLibraryFileUri;
+  final Uri rootLibraryFileUri;
 
   /// A [Uri] to the executable build product file.
   final Uri executableUri;
@@ -40,7 +48,6 @@ class BuildContext {
   MirrorContext get context => RuntimeContext.current as MirrorContext;
 
   Uri get targetScriptFileUri => buildDirectoryUri.resolve("main.dart");
-  Uri get targetScriptFileWithoutMainFunctionUri => buildDirectoryUri.resolve("main.g.dart");
 
   Pubspec get sourceApplicationPubspec => Pubspec.parse(
       File.fromUri(sourceApplicationDirectory.uri.resolve("pubspec.yaml"))
@@ -52,10 +59,10 @@ class BuildContext {
 
   /// The directory of the application being compiled.
   Directory get sourceApplicationDirectory =>
-      getDirectory(applicationLibraryFileUri.resolve("../"));
+      getDirectory(rootLibraryFileUri.resolve("../"));
 
   /// The library file of the application being compiled.
-  File get sourceLibraryFile => getFile(applicationLibraryFileUri);
+  File get sourceLibraryFile => getFile(rootLibraryFileUri);
 
   /// The directory where build artifacts are stored.
   Directory get buildDirectory => getDirectory(buildDirectoryUri);
@@ -78,14 +85,6 @@ class BuildContext {
         sourceApplicationDirectory.uri.resolve(".packages"),
         relativeTo: sourceApplicationDirectory.uri);
   }
-
-  Map<String, dynamic> get safeMap => {
-        'sourceApplicationLibraryFileUri': sourceLibraryFile.uri.toString(),
-        'buildDirectoryUri': buildDirectoryUri.toString(),
-        'source': source,
-        'executableUri': executableUri.toString(),
-        'includeDevDependencies': includeDevDependencies
-      };
 
   /// Returns a [Directory] at [uri], creates it recursively if it doesn't exist.
   Directory getDirectory(Uri uri) {
@@ -149,15 +148,9 @@ class BuildContext {
     final imports = importRegex.allMatches(text).map((m) {
       var importedUri = Uri.parse(m.group(1));
       if (importedUri.scheme != "package" && !importedUri.isAbsolute) {
-        // Resolve importedUri against 'uri' or if it is source, throw arg error
-        if (source != null) {
-          throw ArgumentError(
-              "Cannot resolve relative URIs when using 'source'. "
-              "Replace imported URIs with package or absolute URIs, "
-              "or use 'uri' argument variant of this method.");
-        }
-
-        return "import 'file:${fileUri.resolveUri(importedUri).toFilePath()}';";
+        throw ArgumentError(
+            "Cannot resolve relative URIs in file located at $uri. "
+            "Replace imported URIs with package or absolute URIs");
       }
 
       return text.substring(m.start, m.end);

@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   analyzer: '>=0.32.0 <0.50.0'
+  args: ^1.5.0
   pubspec_parse: '>=0.1.4 <1.0.0'
   isolate_executor: ^2.0.0
   meta: ^1.1.5
