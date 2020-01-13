@@ -17,6 +17,10 @@ abstract class Compiler {
 
   /// Returns a map of runtime objects that can be used at runtime while running in mirrored mode.
   Map<String, dynamic> compile(MirrorContext context);
+
+  void didFinishPackageGeneration(BuildContext context) {
+
+  }
 }
 
 /// Runtimes that generate source code implement this method.

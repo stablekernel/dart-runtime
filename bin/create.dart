@@ -17,7 +17,7 @@ Future main(List<String> args) async {
       help:
           "Path to the .dart script file to compile (contains a main function)", defaultsTo: "bin/main.dart");
   parser.addFlag('test',
-      abbr: "t", help: "Include dev_dependencies when compiling");
+      abbr: "t", help: "Include dev_dependencies when compiling, writes script as test");
 
   final results = parser.parse(args);
 
@@ -28,7 +28,7 @@ Future main(List<String> args) async {
 
   final ctx = BuildContext(
       library, buildDir, outputFile, File.fromUri(script).readAsStringSync(),
-      includeDevDependencies: results['test']);
+      forTests: results['test']);
   final bm = BuildManager(ctx);
   await bm.build();
 }

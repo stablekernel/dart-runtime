@@ -15,14 +15,13 @@ class Build {
 
   Future execute() async {
     print("Generating runtime...");
+
     final runtimeGenerator = RuntimeGenerator();
     context.context.runtimes.map.forEach((typeName, runtime) {
-      if (runtime is! SourceCompiler) {
-        throw StateError(
-            "Could not compile. Runtime '${runtime}' is not a 'SourceCompiler'.");
+      if (runtime is SourceCompiler) {
+        runtimeGenerator.addRuntime(
+          name: typeName, source: runtime.compile(context));
       }
-      runtimeGenerator.addRuntime(
-          name: typeName, source: (runtime as SourceCompiler).compile(context));
     });
 
     await runtimeGenerator.writeTo(context.buildRuntimeDirectory.uri);
@@ -71,7 +70,7 @@ class Build {
       }
     };
 
-    if (context.includeDevDependencies) {
+    if (context.forTests) {
       final devDeps = context.sourceApplicationPubspecMap['dev_dependencies'];
       if (devDeps != null) {
         pubspecMap['dev_dependencies'] = devDeps;
@@ -85,12 +84,22 @@ class Build {
         .getFile(context.targetScriptFileUri)
         .writeAsStringSync(context.source);
 
+    context.context.compilers.forEach((compiler) {
+      compiler.didFinishPackageGeneration(context);
+    });
+
     print("Fetching dependencies (--offline --no-precompile)...");
     await getDependencies();
 
-    print("Compiling...");
-    await compile(context.targetScriptFileUri, context.executableUri);
-    print("Success. Executable is located at '${context.executableUri}'.");
+    if (context.forTests) {
+     final dir = Directory.fromUri(context.buildDirectoryUri.resolve("test/"))..createSync();
+     final testFile = File.fromUri(dir.uri.resolve("main_test.dart"));
+     testFile.writeAsStringSync(context.source);
+    } else {
+      print("Compiling...");
+      await compile(context.targetScriptFileUri, context.executableUri);
+      print("Success. Executable is located at '${context.executableUri}'.");
+    }
   }
 
   Future getDependencies() async {
@@ -104,7 +113,11 @@ class Build {
       throw StateError(
           "'pub get' failed with the following message: ${res.stderr}");
     }
-    print("${res.stdout}");
+
+    if (res.exitCode != 0) {
+      print("${res.stdout}");
+      print("${res.stderr}");
+    }
   }
 
   Future compile(Uri srcUri, Uri dstUri) async {

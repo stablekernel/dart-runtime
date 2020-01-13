@@ -10,7 +10,7 @@ import 'package:yaml/yaml.dart';
 class BuildContext {
   BuildContext(this.rootLibraryFileUri, this.buildDirectoryUri,
       this.executableUri, this.source,
-      {bool includeDevDependencies}) : this.includeDevDependencies = includeDevDependencies ?? false;
+      {bool forTests}) : this.forTests = forTests ?? false;
 
   factory BuildContext.fromMap(Map map) {
     return BuildContext(
@@ -18,7 +18,7 @@ class BuildContext {
         Uri.parse(map['buildDirectoryUri']),
         Uri.parse(map['executableUri']),
         map['source'],
-        includeDevDependencies: map['includeDevDependencies']);
+        forTests: map['forTests']);
   }
 
   Map<String, dynamic> get safeMap => {
@@ -26,7 +26,7 @@ class BuildContext {
     'buildDirectoryUri': buildDirectoryUri.toString(),
     'source': source,
     'executableUri': executableUri.toString(),
-    'includeDevDependencies': includeDevDependencies
+    'forTests': forTests
   };
 
   /// A [Uri] to the library file of the application to be compiled.
@@ -42,7 +42,7 @@ class BuildContext {
   final String source;
 
   /// Whether dev dependencies of the application package are included in the dependencies of the compiled executable.
-  final bool includeDevDependencies;
+  final bool forTests;
 
   /// The [RuntimeContext] available during the build process.
   MirrorContext get context => RuntimeContext.current as MirrorContext;
@@ -157,7 +157,7 @@ class BuildContext {
     }).toList();
 
     if (alsoImportOriginalFile) {
-      imports.add("import '${resolveUri(uri)}';");
+      imports.add("import '${uri}';");
     }
 
     return imports;
