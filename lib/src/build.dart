@@ -88,10 +88,11 @@ class Build {
       compiler.didFinishPackageGeneration(context);
     });
 
+    /*
     print("Fetching dependencies (--offline --no-precompile)...");
-    print("${json.encode(pubspecMap)}");
     await getDependencies();
     print("Finished fetching dependencies.");
+    */
 
     if (context.forTests) {
      final dir = Directory.fromUri(context.buildDirectoryUri.resolve("test/"))..createSync();
@@ -142,8 +143,8 @@ class Build {
     copyDirectory(src: srcUri.resolve("lib/"), dst: dstUri.resolve("lib/"));
     context.getFile(srcUri.resolve("pubspec.yaml")).copy(
         dstUri.resolve("pubspec.yaml").toFilePath(windows: Platform.isWindows));
-    context.getFile(srcUri.resolve("pubspec.lock")).copy(
-        dstUri.resolve("pubspec.lock").toFilePath(windows: Platform.isWindows));
+//    context.getFile(srcUri.resolve("pubspec.lock")).copy(
+//        dstUri.resolve("pubspec.lock").toFilePath(windows: Platform.isWindows));
   }
 
   _PackageInfo _getPackageInfoForName(String packageName) {
