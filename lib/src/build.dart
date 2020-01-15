@@ -89,7 +89,9 @@ class Build {
     });
 
     print("Fetching dependencies (--offline --no-precompile)...");
+    print("${json.encode(pubspecMap)}");
     await getDependencies();
+    print("Finished fetching dependencies.");
 
     if (context.forTests) {
      final dir = Directory.fromUri(context.buildDirectoryUri.resolve("test/"))..createSync();
@@ -110,13 +112,10 @@ class Build {
             context.buildDirectoryUri.toFilePath(windows: Platform.isWindows),
         runInShell: true);
     if (res.exitCode != 0) {
-      throw StateError(
-          "'pub get' failed with the following message: ${res.stderr}");
-    }
-
-    if (res.exitCode != 0) {
       print("${res.stdout}");
       print("${res.stderr}");
+      throw StateError(
+          "'pub get' failed with the following message: ${res.stderr}");
     }
   }
 
