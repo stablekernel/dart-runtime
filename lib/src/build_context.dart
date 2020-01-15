@@ -10,7 +10,8 @@ import 'package:yaml/yaml.dart';
 class BuildContext {
   BuildContext(this.rootLibraryFileUri, this.buildDirectoryUri,
       this.executableUri, this.source,
-      {bool forTests}) : this.forTests = forTests ?? false;
+      {bool forTests})
+      : this.forTests = forTests ?? false;
 
   factory BuildContext.fromMap(Map map) {
     return BuildContext(
@@ -22,12 +23,12 @@ class BuildContext {
   }
 
   Map<String, dynamic> get safeMap => {
-    'rootLibraryFileUri': sourceLibraryFile.uri.toString(),
-    'buildDirectoryUri': buildDirectoryUri.toString(),
-    'source': source,
-    'executableUri': executableUri.toString(),
-    'forTests': forTests
-  };
+        'rootLibraryFileUri': sourceLibraryFile.uri.toString(),
+        'buildDirectoryUri': buildDirectoryUri.toString(),
+        'source': source,
+        'executableUri': executableUri.toString(),
+        'forTests': forTests
+      };
 
   /// A [Uri] to the library file of the application to be compiled.
   final Uri rootLibraryFileUri;
@@ -47,7 +48,11 @@ class BuildContext {
   /// The [RuntimeContext] available during the build process.
   MirrorContext get context => RuntimeContext.current as MirrorContext;
 
-  Uri get targetScriptFileUri => buildDirectoryUri.resolve("main.dart");
+  Uri get targetScriptFileUri => forTests
+      ? getDirectory(buildDirectoryUri.resolve("test/"))
+          .uri
+          .resolve("main_test.dart")
+      : buildDirectoryUri.resolve("main.dart");
 
   Pubspec get sourceApplicationPubspec => Pubspec.parse(
       File.fromUri(sourceApplicationDirectory.uri.resolve("pubspec.yaml"))

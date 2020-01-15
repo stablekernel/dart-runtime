@@ -20,7 +20,7 @@ class Build {
     context.context.runtimes.map.forEach((typeName, runtime) {
       if (runtime is SourceCompiler) {
         runtimeGenerator.addRuntime(
-          name: typeName, source: runtime.compile(context));
+            name: typeName, source: runtime.compile(context));
       }
     });
 
@@ -88,17 +88,11 @@ class Build {
       compiler.didFinishPackageGeneration(context);
     });
 
-    /*
     print("Fetching dependencies (--offline --no-precompile)...");
     await getDependencies();
     print("Finished fetching dependencies.");
-    */
 
-    if (context.forTests) {
-     final dir = Directory.fromUri(context.buildDirectoryUri.resolve("test/"))..createSync();
-     final testFile = File.fromUri(dir.uri.resolve("main_test.dart"));
-     testFile.writeAsStringSync(context.source);
-    } else {
+    if (!context.forTests) {
       print("Compiling...");
       await compile(context.targetScriptFileUri, context.executableUri);
       print("Success. Executable is located at '${context.executableUri}'.");
@@ -143,8 +137,6 @@ class Build {
     copyDirectory(src: srcUri.resolve("lib/"), dst: dstUri.resolve("lib/"));
     context.getFile(srcUri.resolve("pubspec.yaml")).copy(
         dstUri.resolve("pubspec.yaml").toFilePath(windows: Platform.isWindows));
-//    context.getFile(srcUri.resolve("pubspec.lock")).copy(
-//        dstUri.resolve("pubspec.lock").toFilePath(windows: Platform.isWindows));
   }
 
   _PackageInfo _getPackageInfoForName(String packageName) {
