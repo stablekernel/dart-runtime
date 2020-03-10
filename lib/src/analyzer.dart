@@ -9,6 +9,7 @@ class CodeAnalyzer {
     }
 
     contexts = AnalysisContextCollection(includedPaths: [path]);
+
     if (contexts.contexts.isEmpty) {
       throw ArgumentError("no analysis context found for path '${path}'");
     }
@@ -51,8 +52,41 @@ class CodeAnalyzer {
     return unit.unit;
   }
 
-  static String _getPath(Uri inputUri) {
+  static String _getPath(dynamic inputUri) {
     return PhysicalResourceProvider.INSTANCE.pathContext.normalize(
         PhysicalResourceProvider.INSTANCE.pathContext.fromUri(inputUri));
   }
+
+//  List<ClassDeclaration> getClassDeclarationsFromRoot(Uri uri) {
+//    Map<Uri, List<ClassDeclaration>> fileToClassMap = {};
+//    _scanUri(uri, fileToClassMap);
+//    return fileToClassMap.values.expand((i) => i).toList();
+//  }
+//
+//  void _scanUri(Uri uri, Map<Uri, List<ClassDeclaration>> fileToClassMap) {
+//    print("Eval $uri");
+//    if (fileToClassMap.containsKey(uri)) {
+//      print("Already found");
+//      return;
+//    }
+//
+//    final fileAst = _getFileAstRoot(uri);
+//    fileToClassMap[uri] = fileAst.declarations.whereType<ClassDeclaration>().toList();
+//    print("Got AST with ${fileToClassMap[uri].length} classes.");
+//
+//    fileAst.directives
+//      .whereType<Directive>()
+//      .forEach((dir) {
+//        var directiveUri;
+//        if (dir is ExportDirective) {
+//          directiveUri = dir.uri.stringValue;
+//        } else if (dir is ImportDirective) {
+//          directiveUri = dir.uri.stringValue;
+//        }
+//
+//        if (directiveUri != null) {
+//          _scanUri(_getPath(directiveUri), fileToClassMap);
+//        }
+//    });
+//  }
 }

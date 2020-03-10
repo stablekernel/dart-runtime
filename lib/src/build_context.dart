@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:pubspec_parse/pubspec_parse.dart';
+import 'package:runtime/src/analyzer.dart';
 import 'package:runtime/src/context.dart';
 import 'package:runtime/src/file_system.dart';
 import 'package:runtime/src/mirror_context.dart';
@@ -11,7 +12,9 @@ class BuildContext {
   BuildContext(this.rootLibraryFileUri, this.buildDirectoryUri,
       this.executableUri, this.source,
       {bool forTests})
-      : this.forTests = forTests ?? false;
+      : this.forTests = forTests ?? false {
+    analyzer = CodeAnalyzer(sourceApplicationDirectory.uri);
+  }
 
   factory BuildContext.fromMap(Map map) {
     return BuildContext(
@@ -29,6 +32,8 @@ class BuildContext {
         'executableUri': executableUri.toString(),
         'forTests': forTests
       };
+
+  CodeAnalyzer analyzer;
 
   /// A [Uri] to the library file of the application to be compiled.
   final Uri rootLibraryFileUri;
