@@ -1,4 +1,8 @@
+import 'dart:io';
+
+import 'package:analyzer/dart/analysis/analysis_context.dart';
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
+import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/file_system/physical_file_system.dart';
 
@@ -16,12 +20,31 @@ class CodeAnalyzer {
   }
 
   String get path {
-    return _getPath(uri);
+    return getPath(uri);
   }
 
   final Uri uri;
 
   AnalysisContextCollection contexts;
+
+  Map<String, ResolvedUnitResult> _resolvedAsts = {};
+
+  Future<ResolvedUnitResult> resolveUnitAt(Uri uri) async {
+    for (var ctx in contexts.contexts) {
+      final path = getPath(uri);
+      if (_resolvedAsts.containsKey(path)) {
+        return _resolvedAsts[path];
+      }
+
+      final output = await ctx.currentSession.getResolvedUnit(path);
+      if (output.state == ResultState.VALID) {
+        _resolvedAsts[path] = output;
+        return output;
+      }
+    }
+
+    throw ArgumentError("'uri' could not be resolved");
+  }
 
   ClassDeclaration getClassFromFile(String className, Uri fileUri) {
     return _getFileAstRoot(fileUri)
@@ -40,10 +63,12 @@ class CodeAnalyzer {
   }
 
   CompilationUnit _getFileAstRoot(Uri fileUri) {
-    final path = _getPath(fileUri);
+    final path = getPath(fileUri);
+    if (_resolvedAsts.containsKey(path)) {
+      return _resolvedAsts[path].unit;
+    }
 
     final unit = contexts.contextFor(path).currentSession.getParsedUnit(path);
-
     if (unit.errors.isNotEmpty) {
       throw StateError(
           "Project file '${path}' could not be analysed for the following reasons:\n\t${unit.errors.join("\n\t")}");
@@ -52,41 +77,8 @@ class CodeAnalyzer {
     return unit.unit;
   }
 
-  static String _getPath(dynamic inputUri) {
+  static String getPath(dynamic inputUri) {
     return PhysicalResourceProvider.INSTANCE.pathContext.normalize(
         PhysicalResourceProvider.INSTANCE.pathContext.fromUri(inputUri));
   }
-
-//  List<ClassDeclaration> getClassDeclarationsFromRoot(Uri uri) {
-//    Map<Uri, List<ClassDeclaration>> fileToClassMap = {};
-//    _scanUri(uri, fileToClassMap);
-//    return fileToClassMap.values.expand((i) => i).toList();
-//  }
-//
-//  void _scanUri(Uri uri, Map<Uri, List<ClassDeclaration>> fileToClassMap) {
-//    print("Eval $uri");
-//    if (fileToClassMap.containsKey(uri)) {
-//      print("Already found");
-//      return;
-//    }
-//
-//    final fileAst = _getFileAstRoot(uri);
-//    fileToClassMap[uri] = fileAst.declarations.whereType<ClassDeclaration>().toList();
-//    print("Got AST with ${fileToClassMap[uri].length} classes.");
-//
-//    fileAst.directives
-//      .whereType<Directive>()
-//      .forEach((dir) {
-//        var directiveUri;
-//        if (dir is ExportDirective) {
-//          directiveUri = dir.uri.stringValue;
-//        } else if (dir is ImportDirective) {
-//          directiveUri = dir.uri.stringValue;
-//        }
-//
-//        if (directiveUri != null) {
-//          _scanUri(_getPath(directiveUri), fileToClassMap);
-//        }
-//    });
-//  }
 }

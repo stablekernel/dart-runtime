@@ -21,6 +21,8 @@ abstract class Compiler {
   void didFinishPackageGeneration(BuildContext context) {
 
   }
+
+  List<Uri> getUrisToResolve(BuildContext context) => [];
 }
 
 /// Runtimes that generate source code implement this method.

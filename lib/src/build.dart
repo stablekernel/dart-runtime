@@ -14,6 +14,15 @@ class Build {
   Map<String, Uri> _packageMap;
 
   Future execute() async {
+    final compilers = context.context.compilers;
+
+    print("Resolving ASTs...");
+    final astsToResolve = Set.from(compilers.expand((c) => c.getUrisToResolve(context)));
+    await Future.forEach(astsToResolve, (astUri) async {
+      await context.analyzer.resolveUnitAt(context.resolveUri(astUri));
+    });
+
+    // ok - we should ask each compiler if they want any ASTs resolved here
     print("Generating runtime...");
 
     final runtimeGenerator = RuntimeGenerator();
@@ -37,7 +46,7 @@ class Build {
     Map overrides = pubspecMap['dependency_overrides'];
     var sourcePackageIsCompiled = false;
 
-    context.context.compilers.forEach((compiler) {
+    compilers.forEach((compiler) {
       final packageInfo = _getPackageInfoForCompiler(compiler);
       final sourceDirUri = packageInfo.uri;
       final targetDirUri =
