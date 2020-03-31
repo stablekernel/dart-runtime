@@ -22,7 +22,6 @@ class Build {
       await context.analyzer.resolveUnitAt(context.resolveUri(astUri));
     });
 
-    // ok - we should ask each compiler if they want any ASTs resolved here
     print("Generating runtime...");
 
     final runtimeGenerator = RuntimeGenerator();
@@ -144,7 +143,7 @@ class Build {
 
   void copyPackage(Uri srcUri, Uri dstUri) {
     copyDirectory(src: srcUri.resolve("lib/"), dst: dstUri.resolve("lib/"));
-    context.getFile(srcUri.resolve("pubspec.yaml")).copy(
+    context.getFile(srcUri.resolve("pubspec.yaml")).copySync(
         dstUri.resolve("pubspec.yaml").toFilePath(windows: Platform.isWindows));
   }
 
