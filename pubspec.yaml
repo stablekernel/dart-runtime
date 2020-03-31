@@ -1,6 +1,6 @@
 name: runtime
 description: Provides behaviors and base types for packages that can use mirrors and be AOT compiled.
-version: 1.0.0-7
+version: 1.0.0-8
 author: Joe Conway <joe.conway@stablekernel.com>
 homepage: https://stablekernel.com
 

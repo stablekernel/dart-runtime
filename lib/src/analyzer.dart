@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:analyzer/dart/analysis/analysis_context.dart';
 import 'package:analyzer/dart/analysis/analysis_context_collection.dart';
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
@@ -43,7 +40,8 @@ class CodeAnalyzer {
       }
     }
 
-    throw ArgumentError("'uri' could not be resolved");
+    throw ArgumentError("'uri' could not be resolved (contexts: "
+        "${contexts.contexts.map((c) => c.contextRoot.root.toUri()).join(", ")})");
   }
 
   ClassDeclaration getClassFromFile(String className, Uri fileUri) {
@@ -70,8 +68,8 @@ class CodeAnalyzer {
 
     final unit = contexts.contextFor(path).currentSession.getParsedUnit(path);
     if (unit.errors.isNotEmpty) {
-      throw StateError(
-          "Project file '${path}' could not be analysed for the following reasons:\n\t${unit.errors.join("\n\t")}");
+      throw StateError("Project file '${path}' could not be analysed for the "
+          "following reasons:\n\t${unit.errors.join("\n\t")}");
     }
 
     return unit.unit;

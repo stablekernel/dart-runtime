@@ -31,6 +31,8 @@ abstract class RuntimeContext {
   /// `Subclass` must also have a runtime. The runtime objects for both `Subclass` and `Base`
   /// must be the same type.
   dynamic operator [](Type type) => runtimes[type];
+
+  T coerce<T>(dynamic input);
 }
 
 class RuntimeCollection {

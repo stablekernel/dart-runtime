@@ -2,6 +2,7 @@ import 'dart:mirrors';
 
 import 'package:runtime/src/context.dart';
 import 'package:runtime/src/compiler.dart';
+import 'package:runtime/src/mirror_coerce.dart';
 
 RuntimeContext instance = MirrorContext._();
 
@@ -56,6 +57,11 @@ class MirrorContext extends RuntimeContext {
 
       return true;
     }).toList();
+  }
+
+  @override
+  T coerce<T>(dynamic input) {
+    return runtimeCast(input, reflectType(T));
   }
 }
 
