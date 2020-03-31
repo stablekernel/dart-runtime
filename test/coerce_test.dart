@@ -3,7 +3,7 @@ import 'dart:mirrors';
 
 import 'package:runtime/runtime.dart';
 import 'package:runtime/src/mirror_coerce.dart';
-import 'package:runtime/src/slow_coerce.dart';
+import 'package:runtime/slow_coerce.dart';
 import 'package:test/test.dart';
 
 void main() {

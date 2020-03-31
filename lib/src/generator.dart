@@ -51,7 +51,7 @@ environment:
 
   String get _loaderShell => """
 import 'package:runtime/runtime.dart';
-
+import 'package:runtime/slow_coerce.dart' as runtime_cast;
 $_directiveToken
 
 RuntimeContext instance = GeneratedContext._();
@@ -63,6 +63,11 @@ class GeneratedContext extends RuntimeContext {
     $_assignmentToken
     
     runtimes = RuntimeCollection(map);
+  }
+  
+  @override 
+  T coerce<T>(dynamic input) {
+    return runtime_cast.cast(input); 
   }
 }  
   """;

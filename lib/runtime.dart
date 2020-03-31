@@ -15,6 +15,7 @@ export 'src/build_context.dart';
 export 'src/build_manager.dart';
 export 'src/mirror_context.dart';
 export 'src/exceptions.dart';
+export 'src/mirror_coerce.dart';
 
 /// Compiler for the runtime package itself.
 ///
@@ -29,7 +30,7 @@ class RuntimePackageCompiler extends Compiler {
     final libraryFile = File.fromUri(
         destinationDirectory.uri.resolve("lib/").resolve("runtime.dart"));
     libraryFile
-        .writeAsStringSync("library runtime;\nexport 'src/context.dart';");
+        .writeAsStringSync("library runtime;\nexport 'src/context.dart';\nexport 'src/exceptions.dart';");
 
     final contextFile = File.fromUri(destinationDirectory.uri
         .resolve("lib/")
