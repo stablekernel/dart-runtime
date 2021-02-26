@@ -14,10 +14,10 @@ abstract class RuntimeContext {
     _current = runtime;
   }
 
-  static RuntimeContext _current;
+  static RuntimeContext? _current;
 
   /// The runtimes available to the executing application.
-  RuntimeCollection runtimes;
+  late RuntimeCollection runtimes;
 
   /// Gets a runtime object for [type].
   ///

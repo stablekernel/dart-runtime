@@ -1,15 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:meta/meta.dart';
-
 const String _directiveToken = "___DIRECTIVES___";
 const String _assignmentToken = "___ASSIGNMENTS___";
 
 class RuntimeGenerator {
   List<_RuntimeElement> _elements = [];
 
-  void addRuntime({@required String name, @required String source}) {
+  void addRuntime({required String name, String source = ''}) {
     _elements.add(_RuntimeElement(name, source));
   }
 
@@ -24,7 +22,8 @@ class RuntimeGenerator {
       srcDir.createSync(recursive: true);
     }
 
-    final libraryFile = File.fromUri(libDir.uri.resolve("generated_runtime.dart"));
+    final libraryFile =
+        File.fromUri(libDir.uri.resolve("generated_runtime.dart"));
     await libraryFile.writeAsString(loaderSource);
 
     final pubspecFile = File.fromUri(dir.uri.resolve("pubspec.yaml"));
@@ -74,8 +73,8 @@ class GeneratedContext extends RuntimeContext {
 
   String get loaderSource {
     return _loaderShell
-      .replaceFirst(_directiveToken, _directives)
-      .replaceFirst(_assignmentToken, _assignments);
+        .replaceFirst(_directiveToken, _directives)
+        .replaceFirst(_assignmentToken, _assignments);
   }
 
   String get _directives {

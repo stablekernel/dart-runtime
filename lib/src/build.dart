@@ -11,15 +11,16 @@ class Build {
   final BuildContext context;
 
   Map<String, Uri> get packageMap => _packageMap ??= context.resolvedPackages;
-  Map<String, Uri> _packageMap;
+  Map<String, Uri>? _packageMap;
 
   Future execute() async {
     final compilers = context.context.compilers;
 
     print("Resolving ASTs...");
-    final astsToResolve = Set.from(compilers.expand((c) => c.getUrisToResolve(context)));
+    final astsToResolve =
+        Set.from(compilers.expand((c) => c.getUrisToResolve(context)));
     await Future.forEach(astsToResolve, (astUri) async {
-      await context.analyzer.resolveUnitAt(context.resolveUri(astUri));
+      await context.analyzer.resolveUnitAt(context.resolveUri(astUri as Uri)!);
     });
 
     print("Generating runtime...");
@@ -42,7 +43,7 @@ class Build {
       'environment': {'sdk': '>=2.7.0 <3.0.0'},
       'dependency_overrides': {}
     };
-    Map overrides = pubspecMap['dependency_overrides'];
+    Map? overrides = pubspecMap['dependency_overrides'] as Map?;
     var sourcePackageIsCompiled = false;
 
     compilers.forEach((compiler) {
@@ -56,7 +57,7 @@ class Build {
       compiler.deflectPackage(Directory.fromUri(targetDirUri));
 
       if (packageInfo.name != nameOfPackageBeingCompiled) {
-        overrides[packageInfo.name] = {
+        overrides![packageInfo.name] = {
           "path": targetDirUri.toFilePath(windows: Platform.isWindows)
         };
       } else {
@@ -158,7 +159,7 @@ class Build {
   }
 
   _PackageInfo _getPackageInfoForCompiler(Compiler compiler) {
-    final compilerUri = reflect(compiler).type.location.sourceUri;
+    final compilerUri = reflect(compiler).type.location!.sourceUri;
     final parser = RegExp("package\:([^\/]+)");
     final parsed = parser.firstMatch(compilerUri.toString());
     if (parsed == null) {
@@ -167,7 +168,7 @@ class Build {
     }
 
     final packageName = parsed.group(1);
-    return _getPackageInfoForName(packageName);
+    return _getPackageInfoForName(packageName!);
   }
 }
 

@@ -15,7 +15,8 @@ void main() {
     return cast<T>(input);
   };
 
-  final testInvocation = (String suiteName, T Function<T>(dynamic input) coerce) {
+  final testInvocation =
+      (String suiteName, T? Function<T>(dynamic input) coerce) {
     group("($suiteName) Primitive Types (success)", () {
       test("dynamic", () {
         final x = coerce<dynamic>(wash("foo"));
@@ -26,22 +27,22 @@ void main() {
         final x = coerce<int>(wash(2));
         expect(x, 2);
 
-        expect(coerce<int>(null), null);
+        expect(coerce<int?>(null), null);
       });
       test("String", () {
         final x = coerce<String>(wash("string"));
         expect(x, "string");
-        expect(coerce<String>(null), null);
+        expect(coerce<String?>(null), null);
       });
       test("bool", () {
         final x = coerce<bool>(wash(true));
         expect(x, true);
-        expect(coerce<bool>(null), null);
+        expect(coerce<bool?>(null), null);
       });
       test("num", () {
         final x = coerce<num>(wash(3.2));
         expect(x, 3.2);
-        expect(coerce<num>(null), null);
+        expect(coerce<num?>(null), null);
 
         final y = coerce<int>(wash(3));
         expect(y, 3);
@@ -49,7 +50,7 @@ void main() {
       test("double", () {
         final x = coerce<double>(wash(3.2));
         expect(x, 3.2);
-        expect(coerce<double>(null), null);
+        expect(coerce<double?>(null), null);
       });
     });
 
@@ -103,50 +104,50 @@ void main() {
 
     group("($suiteName) List Types (success)", () {
       test("null/empty", () {
-        List<String> x = coerce<List<String>>(null);
+        List<String>? x = coerce<List<String>?>(null);
         expect(x, null);
 
-        x = coerce<List<String>>([]);
+        x = coerce<List<String>>([])!;
         expect(x, []);
       });
 
       test("int", () {
-        List<int> x = coerce<List<int>>(wash([2, 4]));
+        List<int> x = coerce<List<int>>(wash([2, 4]))!;
         expect(x, [2, 4]);
       });
 
       test("String", () {
-        List<String> x = coerce<List<String>>(wash(["a", "b", "c"]));
+        List<String> x = coerce<List<String>>(wash(["a", "b", "c"]))!;
         expect(x, ["a", "b", "c"]);
       });
 
       test("num", () {
-        List<num> x = coerce<List<num>>(wash([3.0, 2]));
+        List<num> x = coerce<List<num>>(wash([3.0, 2]))!;
         expect(x, [3.0, 2]);
       });
 
       test("bool", () {
-        List<bool> x = coerce<List<bool>>(wash([false, true]));
+        List<bool> x = coerce<List<bool>>(wash([false, true]))!;
         expect(x, [false, true]);
       });
 
-
       test("list of map", () {
-        List<Map<String, dynamic>> x = coerce<List<Map<String, dynamic>>>(wash([
+        List<Map<String, dynamic>?> x =
+            coerce<List<Map<String, dynamic>?>>(wash([
           {"a": "b"},
           null,
           {"a": 1}
-        ]));
+        ]))!;
         expect(x, [
           {"a": "b"},
           null,
           {"a": 1}
         ]);
 
-        expect(coerce<List<Map<String, dynamic>>>(null), null);
-        expect(coerce<List<Map<String, dynamic>>>([]), <Map<String, dynamic>>[]);
+        expect(coerce<List<Map<String, dynamic>>?>(null), null);
+        expect(
+            coerce<List<Map<String, dynamic>>>([]), <Map<String, dynamic>>[]);
       });
-
     });
 
     group("($suiteName) List Types (cast error)", () {
@@ -199,28 +200,30 @@ void main() {
 
     group("($suiteName) Map types (success)", () {
       test("null", () {
-        Map<String, dynamic> x = coerce<Map<String, dynamic>>(null);
+        Map<String, dynamic>? x = coerce<Map<String, dynamic>?>(null);
         expect(x, null);
       });
 
       test("string->dynamic", () {
         Map<String, dynamic> x =
-            coerce<Map<String, dynamic>>(wash({"a": 1, "b": "c"}));
+            coerce<Map<String, dynamic>>(wash({"a": 1, "b": "c"}))!;
         expect(x, {"a": 1, "b": "c"});
       });
 
       test("string->int", () {
-        Map<String, int> x = coerce<Map<String, int>>(wash({"a": 1, "b": 2}));
+        Map<String, int> x = coerce<Map<String, int>>(wash({"a": 1, "b": 2}))!;
         expect(x, {"a": 1, "b": 2});
       });
 
       test("string->num", () {
-        Map<String, num> x = coerce<Map<String, num>>(wash({"a": 1, "b": 2.0}));
+        Map<String, num> x =
+            coerce<Map<String, num>>(wash({"a": 1, "b": 2.0}))!;
         expect(x, {"a": 1, "b": 2.0});
       });
 
       test("string->string", () {
-        Map<String, String> x = coerce<Map<String, String>>(wash({"a": "1", "b": "2.0"}));
+        Map<String, String> x =
+            coerce<Map<String, String>>(wash({"a": "1", "b": "2.0"}))!;
         expect(x, {"a": "1", "b": "2.0"});
       });
     });

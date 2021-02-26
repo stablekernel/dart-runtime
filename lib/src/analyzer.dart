@@ -20,13 +20,13 @@ class CodeAnalyzer {
     return getPath(uri);
   }
 
-  final Uri uri;
+  late final Uri uri;
 
-  AnalysisContextCollection contexts;
+  late AnalysisContextCollection contexts;
 
   Map<String, ResolvedUnitResult> _resolvedAsts = {};
 
-  Future<ResolvedUnitResult> resolveUnitAt(Uri uri) async {
+  Future<ResolvedUnitResult?> resolveUnitAt(Uri uri) async {
     for (var ctx in contexts.contexts) {
       final path = getPath(uri);
       if (_resolvedAsts.containsKey(path)) {
@@ -34,7 +34,7 @@ class CodeAnalyzer {
       }
 
       final output = await ctx.currentSession.getResolvedUnit(path);
-      if (output.state == ResultState.VALID) {
+      if (output!.state == ResultState.VALID) {
         _resolvedAsts[path] = output;
         return output;
       }
@@ -44,11 +44,11 @@ class CodeAnalyzer {
         "${contexts.contexts.map((c) => c.contextRoot.root.toUri()).join(", ")})");
   }
 
-  ClassDeclaration getClassFromFile(String className, Uri fileUri) {
+  ClassDeclaration? getClassFromFile(String className, Uri fileUri) {
     return _getFileAstRoot(fileUri)
         .declarations
-        .whereType<ClassDeclaration>()
-        .firstWhere((c) => c.name.name == className, orElse: () => null);
+        .whereType<ClassDeclaration?>()
+        .firstWhere((c) => c!.name.name == className, orElse: () => null);
   }
 
   List<ClassDeclaration> getSubclassesFromFile(
@@ -56,14 +56,14 @@ class CodeAnalyzer {
     return _getFileAstRoot(fileUri)
         .declarations
         .whereType<ClassDeclaration>()
-        .where((c) => c.extendsClause.superclass.name.name == superclassName)
+        .where((c) => c.extendsClause!.superclass.name.name == superclassName)
         .toList();
   }
 
   CompilationUnit _getFileAstRoot(Uri fileUri) {
     final path = getPath(fileUri);
     if (_resolvedAsts.containsKey(path)) {
-      return _resolvedAsts[path].unit;
+      return _resolvedAsts[path]!.unit!;
     }
 
     final unit = contexts.contextFor(path).currentSession.getParsedUnit(path);
