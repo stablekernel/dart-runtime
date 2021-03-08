@@ -26,7 +26,7 @@ class Build {
     print("Generating runtime...");
 
     final runtimeGenerator = RuntimeGenerator();
-    context.context.runtimes.map.forEach((typeName, runtime) {
+    context.context.runtimes?.map.forEach((typeName, runtime) {
       if (runtime is SourceCompiler) {
         runtimeGenerator.addRuntime(
             name: typeName, source: runtime.compile(context));
