@@ -160,7 +160,7 @@ class BuildContext {
 
     final imports = importRegex.allMatches(text).map((m) {
       var importedUri = Uri.parse(m.group(1)!);
-      if (importedUri.scheme == "package") {
+      if (importedUri.scheme == "package" || importedUri.scheme == "dart") {
         return text.substring(m.start, m.end);
       } else if (!importedUri.isAbsolute) {
         final path = fileUri!.resolve(importedUri.path);
