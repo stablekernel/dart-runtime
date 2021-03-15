@@ -160,15 +160,13 @@ class BuildContext {
 
     final imports = importRegex.allMatches(text).map((m) {
       var importedUri = Uri.parse(m.group(1)!);
-      if (importedUri.scheme == "package" || importedUri.scheme == "dart") {
-        return text.substring(m.start, m.end);
-      } else if (!importedUri.isAbsolute) {
+
+      if (!importedUri.isAbsolute) {
         final path = fileUri!.resolve(importedUri.path);
         return 'import \'file:${absolute(path.path)}\';';
       }
-      throw ArgumentError(
-          "Cannot resolve relative URIs in file located at $uri. "
-          "Replace imported URIs with package or absolute URIs");
+
+      return text.substring(m.start, m.end);
     }).toList();
 
     if (alsoImportOriginalFile) {

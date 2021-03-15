@@ -39,7 +39,6 @@ T? cast<T>(dynamic input) {
       } else if (typeString == "List<bool?>") {
         return List<bool?>.from(input) as T;
       } else if (typeString == "List<Map<String, dynamic>>") {
-        print(typeString);
         final objects = <Map<String, dynamic>>[];
         input.forEach((o) {
           objects.add(o);

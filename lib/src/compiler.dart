@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:runtime/src/build_context.dart';
+import 'package:runtime/runtime.dart';
 import 'package:runtime/src/mirror_context.dart';
 
 abstract class Compiler {

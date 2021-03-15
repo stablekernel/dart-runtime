@@ -2,10 +2,9 @@ import 'dart:io';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:isolate_executor/isolate_executor.dart';
+import 'package:runtime/runtime.dart';
 
-import 'package:runtime/src/analyzer.dart';
-import 'package:runtime/src/build.dart';
-import 'package:runtime/src/build_context.dart';
+import 'build_context.dart';
 
 class BuildExecutable extends Executable<Null> {
   BuildExecutable(Map<String, dynamic> message) : super(message) {
