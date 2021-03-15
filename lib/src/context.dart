@@ -1,4 +1,4 @@
-import 'package:runtime/src/mirror_context.dart' as context;
+import 'mirror_context.dart' as context;
 
 /// Contextual values used during runtime.
 abstract class RuntimeContext {

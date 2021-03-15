@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:runtime/runtime.dart';
-import 'package:runtime/src/mirror_context.dart';
+import 'build_context.dart';
+import 'mirror_context.dart';
 
 abstract class Compiler {
   /// Modifies a package on the filesystem in order to remove dart:mirrors from the package.
@@ -18,9 +18,7 @@ abstract class Compiler {
   /// Returns a map of runtime objects that can be used at runtime while running in mirrored mode.
   Map<String, dynamic> compile(MirrorContext context);
 
-  void didFinishPackageGeneration(BuildContext context) {
-
-  }
+  void didFinishPackageGeneration(BuildContext context) {}
 
   List<Uri> getUrisToResolve(BuildContext context) => [];
 }

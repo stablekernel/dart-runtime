@@ -1,4 +1,4 @@
-import 'package:runtime/src/exceptions.dart';
+import 'src/exceptions.dart';
 
 const String _listPrefix = "List<";
 const String _mapPrefix = "Map<String,";

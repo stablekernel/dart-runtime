@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:mirrors';
 
-import 'package:runtime/runtime.dart';
-import 'package:runtime/src/build_context.dart';
+import 'build_context.dart';
+import 'compiler.dart';
+import 'file_system.dart';
+import 'generator.dart';
 
 class Build {
   Build(this.context);
@@ -85,6 +87,8 @@ class Build {
         pubspecMap['dev_dependencies'] = devDeps;
       }
     }
+
+    print(pubspecMap);
 
     File.fromUri(context.buildDirectoryUri.resolve("pubspec.yaml"))
         .writeAsStringSync(json.encode(pubspecMap));

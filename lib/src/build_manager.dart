@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:isolate_executor/isolate_executor.dart';
-import 'package:runtime/runtime.dart';
 
+import 'analyzer.dart';
+import 'build.dart';
 import 'build_context.dart';
 
 class BuildExecutable extends Executable<Null> {
