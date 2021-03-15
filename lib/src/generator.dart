@@ -7,7 +7,7 @@ const String _assignmentToken = "___ASSIGNMENTS___";
 class RuntimeGenerator {
   List<_RuntimeElement> _elements = [];
 
-  void addRuntime({required String name, String source = ''}) {
+  void addRuntime({required String name, required String source}) {
     _elements.add(_RuntimeElement(name, source));
   }
 

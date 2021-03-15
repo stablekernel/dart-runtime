@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:mirrors';
 
-import 'build_context.dart';
-import 'compiler.dart';
-import 'file_system.dart';
-import 'generator.dart';
+import 'package:runtime/src/build_context.dart';
+import 'package:runtime/src/compiler.dart';
+import 'package:runtime/src/file_system.dart';
+import 'package:runtime/src/generator.dart';
 
 class Build {
   Build(this.context);

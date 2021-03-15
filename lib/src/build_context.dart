@@ -3,10 +3,10 @@ import 'dart:mirrors';
 
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:pubspec2/pubspec2.dart';
-import 'analyzer.dart';
-import 'context.dart';
-import 'file_system.dart';
-import 'mirror_context.dart';
+import 'package:runtime/src/analyzer.dart';
+import 'package:runtime/src/context.dart';
+import 'package:runtime/src/file_system.dart';
+import 'package:runtime/src/mirror_context.dart';
 import 'package:yaml/yaml.dart';
 import 'package:path/path.dart';
 
