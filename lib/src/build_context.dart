@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:mirrors';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:pubspec2/pubspec2.dart';
+import 'package:pubspec/pubspec.dart';
 import 'package:runtime/src/analyzer.dart';
 import 'package:runtime/src/context.dart';
 import 'package:runtime/src/file_system.dart';
