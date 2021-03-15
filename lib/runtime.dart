@@ -2,7 +2,7 @@ library runtime;
 
 import 'dart:io';
 
-import 'src/compiler.dart';
+import 'package:runtime/src/compiler.dart';
 import 'package:runtime/src/mirror_context.dart';
 
 export 'package:runtime/src/analyzer.dart';
