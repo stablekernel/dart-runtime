@@ -34,7 +34,7 @@ class CodeAnalyzer {
       }
 
       final output = await ctx.currentSession.getResolvedUnit(path);
-      if (output!.state == ResultState.VALID) {
+      if (output.state == ResultState.VALID) {
         _resolvedAsts[path] = output;
         return output;
       }
