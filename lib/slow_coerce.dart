@@ -71,15 +71,15 @@ T? cast<T>(dynamic input) {
         return Map<String, String>.from(inputMap) as T;
       } else if (typeString == "Map<String, bool>") {
         return Map<String, bool>.from(inputMap) as T;
-      } else if (typeString == "Map<String, int>") {
+      } else if (typeString == "Map<String, int?>") {
         return Map<String, int?>.from(inputMap) as T;
-      } else if (typeString == "Map<String, num>") {
+      } else if (typeString == "Map<String, num?>") {
         return Map<String, num?>.from(inputMap) as T;
-      } else if (typeString == "Map<String, double>") {
+      } else if (typeString == "Map<String, double?>") {
         return Map<String, double?>.from(inputMap) as T;
-      } else if (typeString == "Map<String, String>") {
+      } else if (typeString == "Map<String, String?>") {
         return Map<String, String?>.from(inputMap) as T;
-      } else if (typeString == "Map<String, bool>") {
+      } else if (typeString == "Map<String, bool?>") {
         return Map<String, bool?>.from(inputMap) as T;
       }
     }
