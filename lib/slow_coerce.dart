@@ -3,12 +3,12 @@ import 'package:runtime/src/exceptions.dart';
 const String _listPrefix = "List<";
 const String _mapPrefix = "Map<String,";
 
-T? cast<T>(dynamic input) {
+T cast<T>(dynamic input) {
   try {
     var typeString = T.toString();
     if (typeString.endsWith('?')) {
       if (input == null) {
-        return null;
+        return null as T;
       } else {
         typeString = typeString.substring(0, typeString.length - 1);
       }
