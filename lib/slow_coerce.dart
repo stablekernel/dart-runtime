@@ -44,9 +44,6 @@ T cast<T>(dynamic input) {
           objects.add(o);
         });
         return objects as T;
-      } else {
-        // cross your fingers
-        return input as T;
       }
     } else if (typeString.startsWith(_mapPrefix)) {
       if (input is! Map) {
