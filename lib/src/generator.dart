@@ -66,7 +66,7 @@ class GeneratedContext extends RuntimeContext {
   
   @override 
   T coerce<T>(dynamic input) {
-    return runtime_cast.cast(input); 
+    return runtime_cast.cast<T>(input); 
   }
 }  
   """;
