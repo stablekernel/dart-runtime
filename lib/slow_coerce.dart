@@ -45,15 +45,8 @@ T cast<T>(dynamic input) {
         });
         return objects as T;
       } else {
-        final objects = <Map<String, dynamic>?>[];
-        input.forEach((o) {
-          if (o == null) {
-            objects.add(null);
-          } else {
-            objects.add(o);
-          }
-        });
-        return objects as T;
+        // cross your fingers
+        return input as T;
       }
     } else if (typeString.startsWith(_mapPrefix)) {
       if (input is! Map) {
