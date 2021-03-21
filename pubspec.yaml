@@ -8,7 +8,7 @@ environment:
   sdk: '>=2.12.0-0 <3.0.0'
 
 dependencies:
-  analyzer: ^1.1.0
+  analyzer: ^1.2.0
   args: ^2.0.0
   pubspec: ^2.0.1
   isolate_executor:

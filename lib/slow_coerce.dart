@@ -44,6 +44,12 @@ T cast<T>(dynamic input) {
           objects.add(o);
         });
         return objects as T;
+      } else if (typeString.startsWith("List<Map<String, dynamic>?>")) {
+        final objects = <Map<String, dynamic>?>[];
+        input.forEach((o) {
+          objects.add(o);
+        });
+        return objects as T;
       }
     } else if (typeString.startsWith(_mapPrefix)) {
       if (input is! Map) {
