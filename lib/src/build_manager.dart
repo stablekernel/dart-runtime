@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:isolate_executor/isolate_executor.dart';
+import 'package:conduit_isolate_executor/isolate_executor.dart';
 import 'package:runtime/runtime.dart';
 
 import 'build_context.dart';
