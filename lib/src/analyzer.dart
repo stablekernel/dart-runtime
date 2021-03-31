@@ -26,11 +26,11 @@ class CodeAnalyzer {
 
   final _resolvedAsts = <String, ResolvedUnitResult>{};
 
-  Future<ResolvedUnitResult?> resolveUnitAt(Uri uri) async {
+  Future<ResolvedUnitResult> resolveUnitAt(Uri uri) async {
     for (final ctx in contexts.contexts) {
       final path = getPath(uri);
       if (_resolvedAsts.containsKey(path)) {
-        return _resolvedAsts[path];
+        return _resolvedAsts[path]!;
       }
 
       final output = await ctx.currentSession.getResolvedUnit(path);
@@ -44,11 +44,11 @@ class CodeAnalyzer {
         "${contexts.contexts.map((c) => c.contextRoot.root.toUri()).join(", ")})");
   }
 
-  ClassDeclaration? getClassFromFile(String className, Uri fileUri) {
+  ClassDeclaration getClassFromFile(String className, Uri fileUri) {
     return _getFileAstRoot(fileUri)
         .declarations
-        .whereType<ClassDeclaration?>()
-        .firstWhere((c) => c!.name.name == className, orElse: () => null);
+        .whereType<ClassDeclaration>()
+        .firstWhere((c) => c.name.name == className);
   }
 
   List<ClassDeclaration> getSubclassesFromFile(

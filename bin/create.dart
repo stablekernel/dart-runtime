@@ -50,7 +50,7 @@ Future main(List<String> args) async {
     buildDir,
     outputFile,
     File.fromUri(script).readAsStringSync(),
-    forTests: results['test'] as bool?,
+    forTests: results['test'] as bool,
   );
   final bm = BuildManager(ctx);
   await bm.build();

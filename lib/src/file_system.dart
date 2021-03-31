@@ -28,9 +28,11 @@ void copyDirectory({required Uri src, required Uri dst}) {
 ///
 /// If locations on disk are relative Uris, they are resolved by [relativeTo]. [relativeTo] defaults
 /// to the CWD.
-Map<String, Uri> getResolvedPackageUris(Uri packagesFileUri,
-    {Uri? relativeTo}) {
-  relativeTo ??= Directory.current.uri;
+Map<String, Uri> getResolvedPackageUris(
+  Uri packagesFileUri, {
+  Uri? relativeTo,
+}) {
+  final _relativeTo = relativeTo ?? Directory.current.uri;
 
   final packagesFile = File.fromUri(packagesFileUri);
   if (!packagesFile.existsSync()) {
@@ -54,7 +56,7 @@ Map<String, Uri> getResolvedPackageUris(Uri packagesFileUri,
 
     return MapEntry(
         packageName,
-        Directory.fromUri(relativeTo!.resolveUri(uri).normalizePath())
+        Directory.fromUri(_relativeTo.resolveUri(uri).normalizePath())
             .parent
             .uri);
   }));

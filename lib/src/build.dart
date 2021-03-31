@@ -13,8 +13,7 @@ class Build {
 
   final BuildContext context;
 
-  Map<String, Uri> get packageMap => _packageMap ??= context.resolvedPackages;
-  Map<String, Uri>? _packageMap;
+  late final Map<String, Uri> packageMap = context.resolvedPackages;
 
   Future execute() async {
     final compilers = context.context.compilers;
@@ -31,7 +30,7 @@ class Build {
     print("Generating runtime...");
 
     final runtimeGenerator = RuntimeGenerator();
-    context.context.runtimes?.map.forEach((typeName, runtime) {
+    context.context.runtimes.map.forEach((typeName, runtime) {
       if (runtime is SourceCompiler) {
         runtimeGenerator.addRuntime(
             name: typeName, source: runtime.compile(context));
@@ -48,7 +47,7 @@ class Build {
       'environment': {'sdk': '>=2.12.0-0 <3.0.0'},
       'dependency_overrides': {}
     };
-    final overrides = pubspecMap['dependency_overrides'] as Map?;
+    final overrides = pubspecMap['dependency_overrides'] as Map;
     var sourcePackageIsCompiled = false;
 
     for (final compiler in compilers) {
@@ -62,7 +61,7 @@ class Build {
       compiler.deflectPackage(Directory.fromUri(targetDirUri));
 
       if (packageInfo.name != nameOfPackageBeingCompiled) {
-        overrides![packageInfo.name] = {
+        overrides[packageInfo.name] = {
           "path": targetDirUri.toFilePath(windows: Platform.isWindows)
         };
       } else {

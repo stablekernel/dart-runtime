@@ -17,18 +17,18 @@ class BuildContext {
     this.buildDirectoryUri,
     this.executableUri,
     this.source, {
-    bool? forTests,
-  }) : forTests = forTests ?? false {
+    this.forTests = false,
+  }) {
     analyzer = CodeAnalyzer(sourceApplicationDirectory.uri);
   }
 
-  factory BuildContext.fromMap(Map map) {
+  factory BuildContext.fromMap(Map<String, dynamic> map) {
     return BuildContext(
       Uri.parse(map['rootLibraryFileUri'] as String),
       Uri.parse(map['buildDirectoryUri'] as String),
       Uri.parse(map['executableUri'] as String),
       map['source'] as String,
-      forTests: map['forTests'] as bool?,
+      forTests: map['forTests'] as bool? ?? false,
     );
   }
 
@@ -125,26 +125,32 @@ class BuildContext {
   }
 
   Uri? resolveUri(Uri? uri) {
+    if (uri == null) {
+      return null;
+    }
     var outputUri = uri;
-    if (outputUri?.scheme == "package") {
-      final segments = outputUri!.pathSegments;
+    if (outputUri.scheme == "package") {
+      final segments = outputUri.pathSegments;
       outputUri = resolvedPackages[segments.first]!.resolve("lib/");
       for (var i = 1; i < segments.length; i++) {
         if (i < segments.length - 1) {
-          outputUri = outputUri!.resolve("${segments[i]}/");
+          outputUri = outputUri.resolve("${segments[i]}/");
         } else {
-          outputUri = outputUri!.resolve(segments[i]);
+          outputUri = outputUri.resolve(segments[i]);
         }
       }
-    } else if (outputUri != null && !outputUri.isAbsolute) {
+    } else if (!outputUri.isAbsolute) {
       throw ArgumentError("'uri' must be absolute or a package URI");
     }
 
     return outputUri;
   }
 
-  List<String> getImportDirectives(
-      {Uri? uri, String? source, bool alsoImportOriginalFile = false}) {
+  List<String> getImportDirectives({
+    Uri? uri,
+    String? source,
+    bool alsoImportOriginalFile = false,
+  }) {
     if (uri != null && source != null) {
       throw ArgumentError(
           "either uri or source must be non-null, but not both");
@@ -182,23 +188,24 @@ class BuildContext {
     return imports;
   }
 
-  ClassDeclaration? getClassDeclarationFromType(Type type) {
+  ClassDeclaration getClassDeclarationFromType(Type type) {
     final classMirror = reflectType(type);
     return analyzer.getClassFromFile(
-        MirrorSystem.getName(classMirror.simpleName),
-        resolveUri(classMirror.location!.sourceUri)!);
+      MirrorSystem.getName(classMirror.simpleName),
+      resolveUri(classMirror.location!.sourceUri)!,
+    );
   }
 
   List<Annotation> getAnnotationsFromField(Type _type, String propertyName) {
     var type = reflectClass(_type);
     var field =
-        getClassDeclarationFromType(type.reflectedType)!.getField(propertyName);
+        getClassDeclarationFromType(type.reflectedType).getField(propertyName);
     while (field == null) {
       type = type.superclass!;
       if (type.reflectedType == Object) {
         break;
       }
-      field = getClassDeclarationFromType(type.reflectedType)!
+      field = getClassDeclarationFromType(type.reflectedType)
           .getField(propertyName);
     }
 
