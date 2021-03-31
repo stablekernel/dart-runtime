@@ -14,10 +14,10 @@ abstract class RuntimeContext {
     _current = runtime;
   }
 
-  static RuntimeContext _current;
+  static RuntimeContext? _current;
 
   /// The runtimes available to the executing application.
-  RuntimeCollection runtimes;
+  RuntimeCollection? runtimes;
 
   /// Gets a runtime object for [type].
   ///
@@ -30,7 +30,7 @@ abstract class RuntimeContext {
   /// In other words, if the type `Base` has a runtime and the type `Subclass` extends `Base`,
   /// `Subclass` must also have a runtime. The runtime objects for both `Subclass` and `Base`
   /// must be the same type.
-  dynamic operator [](Type type) => runtimes[type];
+  dynamic operator [](Type type) => runtimes?[type];
 
   T coerce<T>(dynamic input);
 }

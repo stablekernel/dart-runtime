@@ -18,9 +18,7 @@ abstract class Compiler {
   /// Returns a map of runtime objects that can be used at runtime while running in mirrored mode.
   Map<String, dynamic> compile(MirrorContext context);
 
-  void didFinishPackageGeneration(BuildContext context) {
-
-  }
+  void didFinishPackageGeneration(BuildContext context) {}
 
   List<Uri> getUrisToResolve(BuildContext context) => [];
 }

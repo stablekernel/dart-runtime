@@ -4,7 +4,7 @@ import 'package:runtime/src/exceptions.dart';
 
 dynamic runtimeCast(dynamic object, TypeMirror intoType) {
   final exceptionToThrow =
-      TypeCoercionException(intoType.reflectedType, object.runtimeType as Type);
+      TypeCoercionException(intoType.reflectedType, object.runtimeType);
 
   try {
     final objectType = reflect(object).type;
@@ -18,7 +18,7 @@ dynamic runtimeCast(dynamic object, TypeMirror intoType) {
       }
 
       final elementType = intoType.typeArguments.first;
-      final elements = (object as List).map((e) => runtimeCast(e, elementType));
+      final elements = object.map((e) => runtimeCast(e, elementType));
       return (intoType as ClassMirror).newInstance(#from, [elements]).reflectee;
     } else if (intoType.isSubtypeOf(reflectType(Map, [String, dynamic]))) {
       if (object is! Map<String, dynamic>) {
@@ -28,14 +28,12 @@ dynamic runtimeCast(dynamic object, TypeMirror intoType) {
       final output = (intoType as ClassMirror)
           .newInstance(const Symbol(""), []).reflectee as Map<String, dynamic>;
       final valueType = intoType.typeArguments.last;
-      (object as Map<String, dynamic>).forEach((key, val) {
+      object.forEach((key, val) {
         output[key] = runtimeCast(val, valueType);
       });
       return output;
     }
   } on TypeError {
-    throw exceptionToThrow;
-  } on CastError {
     throw exceptionToThrow;
   } on TypeCoercionException {
     throw exceptionToThrow;

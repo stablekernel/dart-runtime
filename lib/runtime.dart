@@ -2,7 +2,7 @@ library runtime;
 
 import 'dart:io';
 
-import 'package:runtime/src/compiler.dart';
+import 'src/compiler.dart';
 import 'package:runtime/src/mirror_context.dart';
 
 export 'src/analyzer.dart';
@@ -29,8 +29,8 @@ class RuntimePackageCompiler extends Compiler {
   void deflectPackage(Directory destinationDirectory) {
     final libraryFile = File.fromUri(
         destinationDirectory.uri.resolve("lib/").resolve("runtime.dart"));
-    libraryFile
-        .writeAsStringSync("library runtime;\nexport 'src/context.dart';\nexport 'src/exceptions.dart';");
+    libraryFile.writeAsStringSync(
+        "library runtime;\nexport 'src/context.dart';\nexport 'src/exceptions.dart';");
 
     final contextFile = File.fromUri(destinationDirectory.uri
         .resolve("lib/")
@@ -41,9 +41,11 @@ class RuntimePackageCompiler extends Compiler {
         "import 'package:generated_runtime/generated_runtime.dart' as context;");
     contextFile.writeAsStringSync(contextFileContents);
 
-    final pubspecFile = File.fromUri(destinationDirectory.uri.resolve("pubspec.yaml"));
-    final pubspecContents = pubspecFile.readAsStringSync().replaceFirst("\ndependencies:",
-      "\ndependencies:\n  generated_runtime:\n    path: ../../generated_runtime/");
+    final pubspecFile =
+        File.fromUri(destinationDirectory.uri.resolve("pubspec.yaml"));
+    final pubspecContents = pubspecFile.readAsStringSync().replaceFirst(
+        "\ndependencies:",
+        "\ndependencies:\n  generated_runtime:\n    path: ../../generated_runtime/");
     pubspecFile.writeAsStringSync(pubspecContents);
   }
 }

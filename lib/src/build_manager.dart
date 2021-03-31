@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:isolate_executor/isolate_executor.dart';
+import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
 import 'package:runtime/runtime.dart';
 
 import 'build_context.dart';
@@ -11,7 +11,7 @@ class BuildExecutable extends Executable<Null> {
     context = BuildContext.fromMap(message);
   }
 
-  BuildContext context;
+  late BuildContext context;
 
   @override
   Future<Null> execute() async {
@@ -36,10 +36,8 @@ class BuildManager {
     // Here is where we need to provide a temporary copy of the script file with the main function stripped;
     // this is because when the RuntimeGenerator loads, it needs Mirror access to any declarations in this file
     var scriptSource = context.source;
-    final strippedScriptFile =
-        File.fromUri(context.targetScriptFileUri)
-          ..writeAsStringSync(scriptSource);
-
+    final strippedScriptFile = File.fromUri(context.targetScriptFileUri)
+      ..writeAsStringSync(scriptSource);
     final analyzer = CodeAnalyzer(strippedScriptFile.absolute.uri);
     final analyzerContext = analyzer.contexts.contextFor(analyzer.path);
     final mainFunctions = analyzerContext.currentSession

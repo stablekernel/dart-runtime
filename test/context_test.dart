@@ -10,7 +10,7 @@ void main() {
       .resolve("application/")
       .resolve("lib/")
       .toFilePath();
-  BuildContext ctx;
+  late BuildContext ctx;
 
   setUpAll(() async {
     final cmd = Platform.isWindows ? "pub.bat" : "pub";
