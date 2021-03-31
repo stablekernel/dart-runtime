@@ -4,11 +4,6 @@
 library application;
 
 import 'package:dependency/dependency.dart';
+import 'src/file.dart'; // ignore: unused_import
 
-import 'src/file.dart';
-
-class ConsumerSubclass extends Consumer {
-
-}
-
-
+class ConsumerSubclass extends Consumer {}

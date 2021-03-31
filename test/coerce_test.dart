@@ -1,55 +1,48 @@
 import 'dart:convert';
 import 'dart:mirrors';
 
-import 'package:runtime/runtime.dart';
-import 'package:runtime/src/mirror_coerce.dart';
-import 'package:runtime/slow_coerce.dart';
+import 'package:conduit_runtime/runtime.dart';
+import 'package:conduit_runtime/src/mirror_coerce.dart';
+import 'package:conduit_runtime/slow_coerce.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final mirrorCoerce = <T>(dynamic input) {
+  T mirrorCoerce<T>(dynamic input) {
     return runtimeCast(input, reflectType(T)) as T;
-  };
+  }
 
-  final slowCoerce = <T>(dynamic input) {
+  T slowCoerce<T>(dynamic input) {
     return cast<T>(input);
-  };
+  }
 
-  final testInvocation =
-      (String suiteName, T? Function<T>(dynamic input) coerce) {
+  void testInvocation(String suiteName, T Function<T>(dynamic input) coerce) {
     group("($suiteName) Primitive Types (success)", () {
       test("dynamic", () {
-        final x = coerce<dynamic>(wash("foo"));
-        expect(x, "foo");
+        expect(coerce<dynamic>(wash("foo")), "foo");
         expect(coerce<dynamic>(null), null);
       });
-      test("int", () {
-        final x = coerce<int>(wash(2));
-        expect(x, 2);
 
+      test("int", () {
+        expect(coerce<int>(wash(2)), 2);
         expect(coerce<int?>(null), null);
       });
+
       test("String", () {
-        final x = coerce<String>(wash("string"));
-        expect(x, "string");
+        expect(coerce<String>(wash("string")), "string");
         expect(coerce<String?>(null), null);
       });
       test("bool", () {
-        final x = coerce<bool>(wash(true));
-        expect(x, true);
+        expect(coerce<bool>(wash(true)), true);
         expect(coerce<bool?>(null), null);
       });
       test("num", () {
-        final x = coerce<num>(wash(3.2));
-        expect(x, 3.2);
+        expect(coerce<num>(wash(3.2)), 3.2);
         expect(coerce<num?>(null), null);
 
-        final y = coerce<int>(wash(3));
-        expect(y, 3);
+        expect(coerce<int>(wash(3)), 3);
       });
       test("double", () {
-        final x = coerce<double>(wash(3.2));
-        expect(x, 3.2);
+        expect(coerce<double>(wash(3.2)), 3.2);
         expect(coerce<double?>(null), null);
       });
     });
@@ -107,42 +100,47 @@ void main() {
         List<String>? x = coerce<List<String>?>(null);
         expect(x, null);
 
-        x = coerce<List<String>>([])!;
+        x = coerce<List<String>>([]);
         expect(x, []);
       });
 
       test("int", () {
-        List<int> x = coerce<List<int>>(wash([2, 4]))!;
-        expect(x, [2, 4]);
+        expect(
+          coerce<List<int>>(wash([2, 4])),
+          [2, 4],
+        );
       });
 
       test("String", () {
-        List<String> x = coerce<List<String>>(wash(["a", "b", "c"]))!;
-        expect(x, ["a", "b", "c"]);
+        expect(
+          coerce<List<String>>(wash(["a", "b", "c"])),
+          ["a", "b", "c"],
+        );
       });
 
       test("num", () {
-        List<num> x = coerce<List<num>>(wash([3.0, 2]))!;
-        expect(x, [3.0, 2]);
+        expect(
+          coerce<List<num>>(wash([3.0, 2])),
+          [3.0, 2],
+        );
       });
 
       test("bool", () {
-        List<bool> x = coerce<List<bool>>(wash([false, true]))!;
-        expect(x, [false, true]);
+        expect(coerce<List<bool>>(wash([false, true])), [false, true]);
       });
 
       test("list of map", () {
-        List<Map<String, dynamic>?> x =
+        expect(
             coerce<List<Map<String, dynamic>?>>(wash([
-          {"a": "b"},
-          null,
-          {"a": 1}
-        ]))!;
-        expect(x, [
-          {"a": "b"},
-          null,
-          {"a": 1}
-        ]);
+              {"a": "b"},
+              null,
+              {"a": 1}
+            ])),
+            [
+              {"a": "b"},
+              null,
+              {"a": 1}
+            ]);
 
         expect(coerce<List<Map<String, dynamic>>?>(null), null);
         expect(
@@ -200,31 +198,38 @@ void main() {
 
     group("($suiteName) Map types (success)", () {
       test("null", () {
-        Map<String, dynamic>? x = coerce<Map<String, dynamic>?>(null);
-        expect(x, null);
+        expect(
+          coerce<Map<String, dynamic>?>(null),
+          null,
+        );
       });
 
       test("string->dynamic", () {
-        Map<String, dynamic> x =
-            coerce<Map<String, dynamic>>(wash({"a": 1, "b": "c"}))!;
-        expect(x, {"a": 1, "b": "c"});
+        expect(
+          coerce<Map<String, dynamic>>(wash({"a": 1, "b": "c"})),
+          {"a": 1, "b": "c"},
+        );
       });
 
       test("string->int", () {
-        Map<String, int> x = coerce<Map<String, int>>(wash({"a": 1, "b": 2}))!;
-        expect(x, {"a": 1, "b": 2});
+        expect(
+          coerce<Map<String, int>>(wash({"a": 1, "b": 2})),
+          {"a": 1, "b": 2},
+        );
       });
 
       test("string->num", () {
-        Map<String, num> x =
-            coerce<Map<String, num>>(wash({"a": 1, "b": 2.0}))!;
-        expect(x, {"a": 1, "b": 2.0});
+        expect(
+          coerce<Map<String, num>>(wash({"a": 1, "b": 2.0})),
+          {"a": 1, "b": 2.0},
+        );
       });
 
       test("string->string", () {
-        Map<String, String> x =
-            coerce<Map<String, String>>(wash({"a": "1", "b": "2.0"}))!;
-        expect(x, {"a": "1", "b": "2.0"});
+        expect(
+          coerce<Map<String, String>>(wash({"a": "1", "b": "2.0"})),
+          {"a": "1", "b": "2.0"},
+        );
       });
     });
 
@@ -283,7 +288,7 @@ void main() {
         }
       });
     });
-  };
+  }
 
   testInvocation("mirrored", mirrorCoerce);
   testInvocation("stringified", slowCoerce);

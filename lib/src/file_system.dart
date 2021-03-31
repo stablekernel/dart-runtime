@@ -35,7 +35,9 @@ Map<String, Uri> getResolvedPackageUris(Uri packagesFileUri,
   final packagesFile = File.fromUri(packagesFileUri);
   if (!packagesFile.existsSync()) {
     throw StateError(
-        "No .packages file found at '${packagesFileUri}'. Run 'pub get' in directory '${packagesFileUri.resolve("../")}'.");
+      "No .packages file found at '$packagesFileUri'. "
+      "Run 'pub get' in directory '${packagesFileUri.resolve('../')}'.",
+    );
   }
   return Map.fromEntries(packagesFile
       .readAsStringSync()

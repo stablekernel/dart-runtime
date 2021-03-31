@@ -1,15 +1,16 @@
 import 'dart:mirrors';
 
-import 'package:runtime/src/context.dart';
-import 'package:runtime/src/compiler.dart';
-import 'package:runtime/src/mirror_coerce.dart';
+import 'package:conduit_runtime/src/context.dart';
+import 'package:conduit_runtime/src/compiler.dart';
+import 'package:conduit_runtime/src/mirror_coerce.dart';
 
 RuntimeContext instance = MirrorContext._();
 
 class MirrorContext extends RuntimeContext {
   MirrorContext._() {
     final m = <String, dynamic>{};
-    compilers.forEach((c) {
+
+    for (final c in compilers) {
       final compiledRuntimes = c.compile(this);
       if (m.keys.any((k) => compiledRuntimes.keys.contains(k))) {
         final matching = m.keys.where((k) => compiledRuntimes.keys.contains(k));
@@ -17,7 +18,7 @@ class MirrorContext extends RuntimeContext {
             'Could not compile. Type conflict for the following types: ${matching.join(", ")}.');
       }
       m.addAll(compiledRuntimes);
-    });
+    }
 
     runtimes = RuntimeCollection(m);
   }
@@ -61,7 +62,7 @@ class MirrorContext extends RuntimeContext {
 
   @override
   T coerce<T>(dynamic input) {
-    return runtimeCast(input, reflectType(T));
+    return runtimeCast(input, reflectType(T)) as T;
   }
 }
 
@@ -70,8 +71,9 @@ T? firstMetadataOfType<T>(DeclarationMirror dm, {TypeMirror? dynamicType}) {
   try {
     return dm.metadata
         .firstWhere((im) => im.type.isSubtypeOf(tMirror))
-        .reflectee;
-  } on StateError {
+        .reflectee as T?;
+    // ignore: avoid_catching_errors
+  } on StateError catch (_) {
     return null;
   }
 }

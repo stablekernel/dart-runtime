@@ -1,21 +1,20 @@
 library runtime;
 
 import 'dart:io';
-
+import 'package:conduit_runtime/src/mirror_context.dart';
 import 'src/compiler.dart';
-import 'package:runtime/src/mirror_context.dart';
 
 export 'src/analyzer.dart';
-export 'src/context.dart';
 export 'src/build.dart';
-export 'src/compiler.dart';
-export 'src/file_system.dart';
-export 'src/generator.dart';
 export 'src/build_context.dart';
 export 'src/build_manager.dart';
-export 'src/mirror_context.dart';
+export 'src/compiler.dart';
+export 'src/context.dart';
 export 'src/exceptions.dart';
+export 'src/file_system.dart';
+export 'src/generator.dart';
 export 'src/mirror_coerce.dart';
+export 'src/mirror_context.dart';
 
 /// Compiler for the runtime package itself.
 ///
@@ -37,7 +36,7 @@ class RuntimePackageCompiler extends Compiler {
         .resolve("src/")
         .resolve("context.dart"));
     final contextFileContents = contextFile.readAsStringSync().replaceFirst(
-        "import 'package:runtime/src/mirror_context.dart' as context;",
+        "import 'package:conduit_runtime/src/mirror_context.dart' as context;",
         "import 'package:generated_runtime/generated_runtime.dart' as context;");
     contextFile.writeAsStringSync(contextFileContents);
 

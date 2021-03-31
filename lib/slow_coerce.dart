@@ -1,4 +1,5 @@
-import 'package:runtime/src/exceptions.dart';
+// ignore_for_file: avoid_catching_errors
+import 'package:conduit_runtime/src/exceptions.dart';
 
 const String _listPrefix = "List<";
 const String _mapPrefix = "Map<String,";
@@ -19,37 +20,29 @@ T cast<T>(dynamic input) {
       }
 
       if (typeString.startsWith("List<int>")) {
-        return List<int>.from(input) as T;
+        return input.cast<int>() as T;
       } else if (typeString.startsWith("List<num>")) {
-        return List<num>.from(input) as T;
+        return input.cast<num>() as T;
       } else if (typeString.startsWith("List<double>")) {
-        return List<double>.from(input) as T;
+        return input.cast<double>() as T;
       } else if (typeString.startsWith("List<String>")) {
-        return List<String>.from(input) as T;
+        return input.cast<String>() as T;
       } else if (typeString.startsWith("List<bool>")) {
-        return List<bool>.from(input) as T;
+        return input.cast<bool>() as T;
       } else if (typeString.startsWith("List<int?>")) {
-        return List<int?>.from(input) as T;
+        return input.cast<int?>() as T;
       } else if (typeString.startsWith("List<num?>")) {
-        return List<num?>.from(input) as T;
+        return input.cast<num?>() as T;
       } else if (typeString.startsWith("List<double?>")) {
-        return List<double?>.from(input) as T;
+        return input.cast<double?>() as T;
       } else if (typeString.startsWith("List<String?>")) {
-        return List<String?>.from(input) as T;
+        return input.cast<String?>() as T;
       } else if (typeString.startsWith("List<bool?>")) {
-        return List<bool?>.from(input) as T;
+        return input.cast<bool?>() as T;
       } else if (typeString.startsWith("List<Map<String, dynamic>>")) {
-        final objects = <Map<String, dynamic>>[];
-        input.forEach((o) {
-          objects.add(o);
-        });
-        return objects as T;
+        return input.cast<Map<String, dynamic>>() as T;
       } else if (typeString.startsWith("List<Map<String, dynamic>?>")) {
-        final objects = <Map<String, dynamic>?>[];
-        input.forEach((o) {
-          objects.add(o);
-        });
-        return objects as T;
+        return input.cast<Map<String, dynamic>?>() as T;
       }
     } else if (typeString.startsWith(_mapPrefix)) {
       if (input is! Map) {
@@ -81,7 +74,7 @@ T cast<T>(dynamic input) {
     }
 
     return input as T;
-  } on TypeError {
+  } on TypeError catch (_) {
     throw TypeCoercionException(T, input.runtimeType);
   }
 }

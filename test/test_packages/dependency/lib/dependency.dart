@@ -3,6 +3,5 @@
 /// More dartdocs go here.
 library dependency;
 
-export 'src/dependency_base.dart';
-
 export 'src/compiler.dart';
+export 'src/dependency_base.dart';

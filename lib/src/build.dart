@@ -1,11 +1,12 @@
+// ignore_for_file: avoid_print
 import 'dart:convert';
 import 'dart:io';
 import 'dart:mirrors';
 
-import 'package:runtime/src/build_context.dart';
-import 'package:runtime/src/compiler.dart';
-import 'package:runtime/src/file_system.dart';
-import 'package:runtime/src/generator.dart';
+import 'package:conduit_runtime/src/build_context.dart';
+import 'package:conduit_runtime/src/compiler.dart';
+import 'package:conduit_runtime/src/file_system.dart';
+import 'package:conduit_runtime/src/generator.dart';
 
 class Build {
   Build(this.context);
@@ -19,11 +20,13 @@ class Build {
     final compilers = context.context.compilers;
 
     print("Resolving ASTs...");
-    final astsToResolve =
-        Set.from(compilers.expand((c) => c.getUrisToResolve(context)));
-    await Future.forEach(astsToResolve, (astUri) async {
-      await context.analyzer.resolveUnitAt(context.resolveUri(astUri as Uri)!);
-    });
+    final astsToResolve = <Uri>{
+      ...compilers.expand((c) => c.getUrisToResolve(context))
+    };
+    await Future.forEach<Uri>(
+      astsToResolve,
+      (astUri) => context.analyzer.resolveUnitAt(context.resolveUri(astUri)!),
+    );
 
     print("Generating runtime...");
 
@@ -39,16 +42,16 @@ class Build {
     print("Generated runtime at '${context.buildRuntimeDirectory.uri}'.");
 
     final nameOfPackageBeingCompiled = context.sourceApplicationPubspec.name;
-    final pubspecMap = {
+    final pubspecMap = <String, dynamic>{
       'name': 'runtime_target',
       'version': '1.0.0',
       'environment': {'sdk': '>=2.12.0-0 <3.0.0'},
       'dependency_overrides': {}
     };
-    Map? overrides = pubspecMap['dependency_overrides'] as Map?;
+    final overrides = pubspecMap['dependency_overrides'] as Map?;
     var sourcePackageIsCompiled = false;
 
-    compilers.forEach((compiler) {
+    for (final compiler in compilers) {
       final packageInfo = _getPackageInfoForCompiler(compiler);
       final sourceDirUri = packageInfo.uri;
       final targetDirUri =
@@ -65,15 +68,15 @@ class Build {
       } else {
         sourcePackageIsCompiled = true;
       }
-      print("Package '${packageInfo.name} compiled to '${targetDirUri}'.");
-    });
+      print("Package '${packageInfo.name} compiled to '$targetDirUri'.");
+    }
 
     final appDst = context.buildApplicationDirectory.uri;
     if (!sourcePackageIsCompiled) {
       print(
           "Copying application package (from '${context.sourceApplicationDirectory.uri}')...");
       copyPackage(context.sourceApplicationDirectory.uri, appDst);
-      print("Application packaged copied to '${appDst}'.");
+      print("Application packaged copied to '$appDst'.");
     }
     pubspecMap['dependencies'] = {
       nameOfPackageBeingCompiled: {
@@ -95,9 +98,9 @@ class Build {
         .getFile(context.targetScriptFileUri)
         .writeAsStringSync(context.source);
 
-    context.context.compilers.forEach((compiler) {
+    for (final compiler in context.context.compilers) {
       compiler.didFinishPackageGeneration(context);
-    });
+    }
 
     print("Fetching dependencies (--offline --no-precompile)...");
     await getDependencies();
@@ -154,7 +157,7 @@ class Build {
     final packageUri = packageMap[packageName];
     if (packageUri == null) {
       throw StateError(
-          'Package \'$packageName\' not found in package map. Make sure it is in dependencies and run \'pub get\'.');
+          'Package "$packageName" not found in package map. Make sure it is in dependencies and run "pub get".');
     }
 
     return _PackageInfo(packageName, packageUri);
@@ -162,11 +165,13 @@ class Build {
 
   _PackageInfo _getPackageInfoForCompiler(Compiler compiler) {
     final compilerUri = reflect(compiler).type.location!.sourceUri;
-    final parser = RegExp("package\:([^\/]+)");
+    final parser = RegExp(r"package\:([^\/]+)");
     final parsed = parser.firstMatch(compilerUri.toString());
     if (parsed == null) {
       throw StateError(
-          "Could not identify package of Compiler '${compiler.runtimeType}' (from URI '${compilerUri}').");
+        "Could not identify package of Compiler '${compiler.runtimeType}' "
+        "(from URI '$compilerUri').",
+      );
     }
 
     final packageName = parsed.group(1);

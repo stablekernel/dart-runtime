@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:conduit_isolate_executor/isolate_executor.dart';
-import 'package:runtime/runtime.dart';
+import 'package:conduit_isolate_exec/conduit_isolate_exec.dart';
+import 'package:conduit_runtime/runtime.dart';
 
 import 'build_context.dart';
 
-class BuildExecutable extends Executable<Null> {
+class BuildExecutable extends Executable<void> {
   BuildExecutable(Map<String, dynamic> message) : super(message) {
     context = BuildContext.fromMap(message);
   }
@@ -14,7 +14,7 @@ class BuildExecutable extends Executable<Null> {
   late BuildContext context;
 
   @override
-  Future<Null> execute() async {
+  Future<void> execute() async {
     final build = Build(context);
     await build.execute();
   }
@@ -48,19 +48,19 @@ class BuildManager {
         .where((f) => f.name.name == "main")
         .toList();
 
-    mainFunctions.reversed.forEach((f) {
+    for (final f in mainFunctions.reversed) {
       scriptSource = scriptSource.replaceRange(f.offset, f.end, "");
-    });
+    }
 
     strippedScriptFile.writeAsStringSync(scriptSource);
 
     await IsolateExecutor.run(BuildExecutable(context.safeMap),
         packageConfigURI: sourceDirectoryUri.resolve(".packages"),
         imports: [
-          "package:runtime/runtime.dart",
+          "package:conduit_runtime/runtime.dart",
           context.targetScriptFileUri.toString()
         ],
-        logHandler: (s) => print(s));
+        logHandler: (s) => print(s)); //ignore: avoid_print
   }
 
   Future clean() async {
